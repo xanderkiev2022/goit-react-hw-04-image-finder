@@ -1,12 +1,20 @@
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState, useFocusEffect } from 'react';
 import { imagesAPI } from 'Services/imagesAPI';
 import { Gallery } from './imageGallery.styled';
 
 export function ImageGallery ({searchQuery, page, imageList, getImageList, getTotalHits, changeLoadingStatus, children}) {
  
+  const [isloaded, setLoaded] = useState(false)
+
+
+  // useFocusEffect(() => {
+
+
+
   useEffect (()=>{
+    // if (!isloaded) {
 
     async function fetchData() {
       changeLoadingStatus(true);
@@ -33,6 +41,10 @@ export function ImageGallery ({searchQuery, page, imageList, getImageList, getTo
       } 
     }
         fetchData();
+      // }
+
+        // setLoaded(true)
+
 }, [searchQuery, page])
 
   // async componentDidUpdate(prevProps) {
