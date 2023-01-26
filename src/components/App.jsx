@@ -30,26 +30,11 @@ export function App () {
   const loadMore = () => {setPage (prevPage=> prevPage + 1)};
   const toggleModal = () => {setShowModal(prevModal => !prevModal);};
 
-  // const getImageList = data => {
-  //   imageList ? setImageList(prevData => [...prevData, ...data]):setImageList(data);
-  // };
-
   const getImageList = data => {
-
-    console.log('data :>> ', data);
-    if (!imageList) {
-      setImageList(data);
-      return;
-    }
-    if (imageList) {
-      // setImageList(data)
-      setImageList(prevData => [...prevData, ...data])
-      return;
-    }
+    imageList ? setImageList(prevData => [...prevData, ...data]):setImageList(data);
   };
 
-
-    return (
+  return (
       <Container>
         <Toaster position="top-right" reverseOrder={false} />
         <Searchbar onSubmit={handleSubmit} />
