@@ -16,7 +16,6 @@ export const imagesAPI = async (searchQuery, page) => {
         per_page: 12,
       },
     });
-    console.log('data :>> ', data);
     return data;
   } catch (error) {
     console.error(error);

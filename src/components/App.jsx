@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
+import { useState, useEffect } from 'react';
+import { imagesAPI } from 'Services/imagesAPI';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
@@ -18,34 +20,39 @@ export function App () {
   const [totalhits, setTotalhits] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if (!searchQuery) {return;}
+
+    async function fetchData() {
+      setIsLoading(true);
+      try {
+        const {hits, totalHits} = await imagesAPI(searchQuery, page);
+        if (hits.length === 0) {toast.error(`Sorry, there are no images matching your search query`);return;}
+        if (page === 1) {toast.success(`Hooray! We found ${totalHits} images.`);}
+        setImageList(prevData => [...prevData, ...hits]);
+        setTotalhits(totalHits);}
+      catch (error) {return toast.error(`Something went wrong. ${error}. Please, try again later`);}
+      finally {setIsLoading(false);}
+    }
+
+    fetchData();
+  }, [searchQuery, page ]);
+
+
   const handleSubmit = searchQuery => {
     setSearchQuery(searchQuery);
     setPage (1);
     setImageList([])
   };
-  const changeLoadingStatus = value => setIsLoading(value);
   const getLargeImage = largeImage => setLargeImage(largeImage);
-  const getTotalHits = totalhits => setTotalhits(totalhits);
-
   const loadMore = () => {setPage (prevPage=> prevPage + 1)};
   const toggleModal = () => {setShowModal(prevModal => !prevModal);};
 
-  const getImageList = data => {
-    imageList ? setImageList(prevData => [...prevData, ...data]):setImageList(data);
-  };
-
-  return (
+    return (
       <Container>
         <Toaster position="top-right" reverseOrder={false} />
         <Searchbar onSubmit={handleSubmit} />
-        <ImageGallery
-          searchQuery={searchQuery}
-          page={page}
-          imageList={imageList}
-          getImageList={getImageList}
-          getTotalHits={getTotalHits}
-          changeLoadingStatus={changeLoadingStatus}
-        >
+        <ImageGallery imageList={imageList}>
           {imageList?.map(image => (
             <ImageGalleryItem
               key={image.webformatURL}
