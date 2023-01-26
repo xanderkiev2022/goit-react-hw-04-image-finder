@@ -18,7 +18,7 @@ export function Modal ({largeImage, toggleModal}) {
     return () => {
       window.removeEventListener('keydown', handleClose);
     };
-  }, [])
+  })
 
     return createPortal(
       <Overlay onClick={handleClose}>
